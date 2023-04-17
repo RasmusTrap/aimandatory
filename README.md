@@ -1,1 +1,1 @@
-# aimandatory
+# MandatoryAI
