@@ -4,6 +4,12 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import GridSearchCV
+from sklearn.tree import export_graphviz
+import graphviz
+import os
+
+
+os.environ["PATH"] += os.pathsep + '/usr/local/opt/graphviz/bin'
 
 # Load datasets into Pandas dataframes
 heart_df = pd.read_csv("Heart_disease_statlog.csv")
@@ -36,6 +42,18 @@ model.fit(X_train, y_train)
 
 # make predictions on the test set
 y_pred = model.predict(X_test)
+
+heart_df['target'] = heart_df['target'].astype(str)
+
+# Generate DOT data from the decision tree
+dot_data = export_graphviz(model, out_file=None, 
+                           feature_names=X_train.columns,
+                           class_names=heart_df['target'].unique(),  # Update this line
+                           filled=True, rounded=True, special_characters=True)
+
+# Render the decision tree visualization using Graphviz
+graph = graphviz.Source(dot_data)
+graph.render("decision_tree_visualization", view=True)
 
 # print some predictions
 print("Actual target values:")
